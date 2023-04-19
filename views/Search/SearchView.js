@@ -1,10 +1,25 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { StyleSheet, SafeAreaView, Text } from 'react-native'
 import { FAB, Portal } from 'react-native-paper'
 import LottieView from 'lottie-react-native'
+import * as ImagePicker from 'expo-image-picker'
 
 export default SearchView = () => {
     const [fabOpen, setFabOpen] = useState(false)
+    const [image, setImage] = useState(null)
+
+    useEffect(() => {}, [image])
+
+    const pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            quality: 1
+        })
+
+        if (!result.canceled) {
+            setImage(result.assets[0].uri)
+        }
+    }
 
     return (
         <SafeAreaView style={styles.container}>
@@ -25,11 +40,13 @@ export default SearchView = () => {
                     actions={[
                         {
                             icon: 'camera',
-                            label: 'Camera'
+                            label: 'Camera',
+                            onPress: () => console.log('camera')
                         },
                         {
                             icon: 'camera-burst',
-                            label: 'Gallery'
+                            label: 'Gallery',
+                            onPress: pickImage
                         }
                     ]}
                 />
