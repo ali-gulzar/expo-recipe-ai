@@ -26,13 +26,10 @@
         },
         "plugins": [
             [
-                "expo-camera",
-                {
-                    "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera."
-                },
                 "expo-image-picker",
                 {
-                    "photosPermission": "Recipe AI accesses your photos so you can upload ingredient images and search for relevant recipes!"
+                    "photosPermission": "Recipe AI accesses your photos so you can upload ingredient images and search for relevant recipes.",
+                    "cameraPermission": "Recipe AI would like to access your camera."
                 }
             ]
         ]

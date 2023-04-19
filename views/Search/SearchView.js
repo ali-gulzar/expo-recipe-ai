@@ -3,21 +3,49 @@ import { StyleSheet, SafeAreaView, Text } from 'react-native'
 import { FAB, Portal } from 'react-native-paper'
 import LottieView from 'lottie-react-native'
 import * as ImagePicker from 'expo-image-picker'
+import { fetchRecipes } from '../../api/recipe'
 
 export default SearchView = () => {
     const [fabOpen, setFabOpen] = useState(false)
     const [image, setImage] = useState(null)
+    const [recipes, setRecipes] = useState([])
+    const [status, requestPermission] = ImagePicker.useCameraPermissions()
 
-    useEffect(() => {}, [image])
+    useEffect(() => {
+        if (image) {
+            // upload this image to s3
+
+            // infer ingredient
+
+            // fetch recipes
+            fetchRecipes().then((response) => setRecipes(response.data))
+        }
+    }, [image])
 
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
-            quality: 1
+            quality: 1,
+            base64: true
         })
 
         if (!result.canceled) {
             setImage(result.assets[0].uri)
+        }
+    }
+
+    const takePhoto = async () => {
+        if (status.granted) {
+            let result = await ImagePicker.launchCameraAsync({
+                mediaTypes: 'Images',
+                base64: true
+            })
+
+            if (!result.canceled) {
+                setImage(result.assets[0].uri)
+            }
+        } else {
+            requestPermission()
         }
     }
 
@@ -26,7 +54,7 @@ export default SearchView = () => {
             <Text style={styles.title}>RECIPES</Text>
             <LottieView
                 autoPlay
-                source={require('../../assets/animations/thinking_food.json')}
+                source={require('../../assets/animations/women_thinking.json')}
                 style={styles.animation}
             />
             <Text style={styles.searchText}>Click on + icon to start searching for recipes.</Text>
@@ -41,7 +69,7 @@ export default SearchView = () => {
                         {
                             icon: 'camera',
                             label: 'Camera',
-                            onPress: () => console.log('camera')
+                            onPress: takePhoto
                         },
                         {
                             icon: 'camera-burst',
