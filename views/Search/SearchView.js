@@ -1,63 +1,127 @@
-import { useEffect, useState } from 'react'
-import { StyleSheet, SafeAreaView, Text } from 'react-native'
-import { FAB, Portal } from 'react-native-paper'
+import { useState } from 'react'
+import { StyleSheet, SafeAreaView, Text, View, FlatList } from 'react-native'
+import { FAB, Portal, ActivityIndicator } from 'react-native-paper'
 import LottieView from 'lottie-react-native'
 import * as ImagePicker from 'expo-image-picker'
-import { fetchRecipes } from '../../api/recipe'
+import { uploadImage, inferIngredient, fetchRecipes } from '../../api/recipe'
+import RecipeCard from '../../components/RecipeCard'
 
 export default SearchView = () => {
     const [fabOpen, setFabOpen] = useState(false)
-    const [image, setImage] = useState(null)
-    const [recipes, setRecipes] = useState([])
+    const [recipes, setRecipes] = useState({
+        ingredient: null,
+        recipes: []
+    })
+    const [searching, setSearching] = useState({ searching: false, searchMessage: null })
     const [status, requestPermission] = ImagePicker.useCameraPermissions()
 
-    useEffect(() => {
-        if (image) {
-            // upload this image to s3
+    const fetchResults = async (image) => {
+        // remove current recipes
+        setRecipes({ recipes: [], ingredient: null })
 
-            // infer ingredient
+        setSearching({
+            searching: true,
+            searchMessage: 'Detecting provided image!'
+        })
 
-            // fetch recipes
-            fetchRecipes().then((response) => setRecipes(response.data))
+        try {
+            // upload image to s3
+            const uploadImageResponse = await uploadImage(image)
+            const s3ImageUrl = uploadImageResponse.data
+
+            setSearching({ searching: true, searchMessage: 'Valid image provided!' })
+
+            // infer ingredient using s3 image url
+            const inferIngredientResponse = await inferIngredient(s3ImageUrl)
+            const ingredient = inferIngredientResponse.data
+
+            setSearching({
+                searching: true,
+                searchMessage: `Detected main ingredient is ${ingredient}. Fetching recipes!`
+            })
+
+            // get recipes with this ingredient
+            const recipeResponse = await fetchRecipes(ingredient)
+            const recipes = recipeResponse.data
+
+            setRecipes({
+                recipes: recipes['recipes'],
+                ingredient
+            })
+        } catch (e) {
+            console.error(e)
         }
-    }, [image])
+
+        setSearching({
+            searching: false,
+            searchMessage: null
+        })
+    }
 
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.All,
-            quality: 1,
-            base64: true
+            mediaTypes: ImagePicker.MediaTypeOptions.All
         })
 
         if (!result.canceled) {
-            setImage(result.assets[0].uri)
+            fetchResults(result.assets[0])
         }
     }
 
     const takePhoto = async () => {
         if (status.granted) {
             let result = await ImagePicker.launchCameraAsync({
-                mediaTypes: 'Images',
-                base64: true
+                mediaTypes: 'Images'
             })
 
             if (!result.canceled) {
-                setImage(result.assets[0].uri)
+                fetchResults(result.assets[0])
             }
         } else {
             requestPermission()
         }
     }
 
-    return (
-        <SafeAreaView style={styles.container}>
-            <Text style={styles.title}>RECIPES</Text>
+    const StartSearching = () => (
+        <>
             <LottieView
                 autoPlay
                 source={require('../../assets/animations/women_thinking.json')}
                 style={styles.animation}
             />
             <Text style={styles.searchText}>Click on + icon to start searching for recipes.</Text>
+        </>
+    )
+
+    const SearchingRecipes = () => (
+        <View style={styles.searchingContainer}>
+            <ActivityIndicator animating size="large" color="red" style={styles.loader} />
+            <Text style={styles.searchText}>{searching.searchMessage}</Text>
+        </View>
+    )
+
+    const RecipeList = () => (
+        <View style={styles.recipeListContainer}>
+            <Text style={styles.ingredientText}>{recipes.ingredient}</Text>
+            <FlatList
+                data={recipes.recipes}
+                renderItem={({ item }) => <RecipeCard recipe={item} />}
+                keyExtractor={(item) => item.url}
+                showsVerticalScrollIndicator={false}
+            />
+        </View>
+    )
+
+    return (
+        <SafeAreaView style={styles.container}>
+            <Text style={styles.title}>RECIPES</Text>
+            {recipes.recipes.length > 0 ? (
+                <RecipeList />
+            ) : searching.searching ? (
+                <SearchingRecipes />
+            ) : (
+                <StartSearching />
+            )}
             <Portal>
                 <FAB.Group
                     style={styles.fab}
@@ -101,5 +165,22 @@ const styles = StyleSheet.create({
     fab: {
         position: 'absolute',
         paddingBottom: 120
+    },
+    searchingContainer: {
+        flex: 1,
+        justifyContent: 'center'
+    },
+    loader: {
+        marginBottom: 20
+    },
+    recipeListContainer: {
+        marginLeft: 5,
+        marginRight: 5,
+        marginBottom: 90
+    },
+    ingredientText: {
+        alignSelf: 'center',
+        fontSize: 25,
+        textTransform: 'uppercase'
     }
 })
