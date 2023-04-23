@@ -102,7 +102,6 @@ export default SearchView = () => {
 
     const RecipeList = () => (
         <View style={styles.recipeListContainer}>
-            <Text style={styles.ingredientText}>{recipes.ingredient}</Text>
             <FlatList
                 data={recipes.recipes}
                 renderItem={({ item }) => <RecipeCard recipe={item} />}
@@ -175,8 +174,7 @@ const styles = StyleSheet.create({
     },
     recipeListContainer: {
         marginLeft: 5,
-        marginRight: 5,
-        marginBottom: 90
+        marginRight: 5
     },
     ingredientText: {
         alignSelf: 'center',
