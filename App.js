@@ -1,15 +1,14 @@
 import { useState } from 'react'
 import { StatusBar } from 'expo-status-bar'
-import { Provider as PaperProvider, BottomNavigation, Text } from 'react-native-paper'
+import { Provider as PaperProvider, BottomNavigation } from 'react-native-paper'
 import SearchView from './views/Search/SearchView.js'
 import BrowseView from './views/Browse/BrowseView.js'
-
-const ProfileRoute = () => <Text>Profile</Text>
+import ProfileView from './views/Profile/ProfileView.js'
 
 const renderScene = BottomNavigation.SceneMap({
     search: SearchView,
     browse: BrowseView,
-    profile: ProfileRoute
+    profile: ProfileView
 })
 
 export default function App() {

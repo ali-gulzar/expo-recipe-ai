@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { StyleSheet, SafeAreaView, Text, View, FlatList } from 'react-native'
 import { FAB, Portal, ActivityIndicator } from 'react-native-paper'
 import LottieView from 'lottie-react-native'
 import * as ImagePicker from 'expo-image-picker'
 import { uploadImage, inferIngredient, fetchRecipes } from '../../api/recipe'
 import RecipeCard from '../../components/RecipeCard'
+import { getAnimation } from '../../api/animation'
 
 export default SearchView = () => {
     const [fabOpen, setFabOpen] = useState(false)
@@ -14,6 +15,12 @@ export default SearchView = () => {
     })
     const [searching, setSearching] = useState({ searching: false, searchMessage: null })
     const [status, requestPermission] = ImagePicker.useCameraPermissions()
+
+    const [animation, setAnimation] = useState({})
+
+    useEffect(() => {
+        getAnimation('women_thinking').then((response) => setAnimation(response.data))
+    }, [])
 
     const fetchResults = async (image) => {
         // remove current recipes
@@ -82,13 +89,28 @@ export default SearchView = () => {
         }
     }
 
+    const lottieRef = useRef(null)
+
+    useEffect(() => {
+        if (lottieRef.current) {
+            setTimeout(() => {
+                lottieRef.current?.reset()
+                lottieRef.current?.play()
+            }, 100)
+        }
+    }, [lottieRef.current])
+
     const StartSearching = () => (
         <>
-            <LottieView
-                autoPlay
-                source={require('../../assets/animations/women_thinking.json')}
-                style={styles.animation}
-            />
+            {Object.keys(animation).length > 0 && (
+                <LottieView
+                    ref={lottieRef}
+                    loop={true}
+                    speed={1}
+                    source={animation}
+                    style={styles.animation}
+                />
+            )}
             <Text style={styles.searchText}>Click on + icon to start searching for recipes.</Text>
         </>
     )
