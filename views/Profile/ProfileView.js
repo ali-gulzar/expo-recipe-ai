@@ -4,7 +4,7 @@ import { StyleSheet, SafeAreaView, View } from 'react-native'
 import { useState } from 'react'
 
 export default function ProfileView() {
-    const [pushNotifications, setPushNotifications] = useState(true)
+    const [pushNotifications, setPushNotifications] = useState(false)
 
     return (
         <SafeAreaView style={styles.container}>
@@ -14,7 +14,7 @@ export default function ProfileView() {
             </View>
 
             <View style={styles.switch}>
-                <Text variant="bodyLarge">Enable Push Notifications</Text>
+                <Text variant="bodyLarge">Dark Mode</Text>
                 <Switch
                     value={pushNotifications}
                     onValueChange={() => setPushNotifications(!pushNotifications)}
