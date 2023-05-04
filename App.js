@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { StatusBar } from 'expo-status-bar'
 import { Provider as PaperProvider, BottomNavigation, Portal } from 'react-native-paper'
 import { RecoilRoot } from 'recoil'
+import { useFonts } from 'expo-font'
 import SearchView from './views/Search/SearchView.js'
 import BrowseView from './views/Browse/BrowseView.js'
 import ProfileView from './views/Profile/ProfileView.js'
@@ -38,6 +39,15 @@ export default function App() {
             unfocusedIcon: 'face-man-shimmer-outline'
         }
     ])
+    const [fontsLoaded] = useFonts({
+        'Bruno-Ace': require('./fonts/BrunoAce.ttf'),
+        'Red-Hat': require('./fonts/RedHat.ttf')
+    })
+
+    if (!fontsLoaded) {
+        return null
+    }
+
     return (
         <RecoilRoot>
             <PaperProvider>

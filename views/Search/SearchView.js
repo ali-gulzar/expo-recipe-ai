@@ -7,6 +7,8 @@ import { uploadImage, inferIngredient, fetchRecipes } from '../../api/recipe'
 import RecipeCard from '../../components/RecipeCard'
 import { getAnimation } from '../../api/animation'
 import { ANIMATIONS } from '../../constants'
+import { useRecoilValue } from 'recoil'
+import { accessTokenState } from '../../atoms/atom'
 
 export default SearchView = () => {
     const [fabOpen, setFabOpen] = useState(false)
@@ -16,8 +18,8 @@ export default SearchView = () => {
     })
     const [searching, setSearching] = useState({ searching: false, searchMessage: null })
     const [status, requestPermission] = ImagePicker.useCameraPermissions()
-
     const [animation, setAnimation] = useState({})
+    const accessToken = useRecoilValue(accessTokenState)
 
     useEffect(() => {
         getAnimation(ANIMATIONS.women_thinking)
@@ -36,13 +38,13 @@ export default SearchView = () => {
 
         try {
             // upload image to s3
-            const uploadImageResponse = await uploadImage(image)
+            const uploadImageResponse = await uploadImage(image, accessToken)
             const s3ImageUrl = uploadImageResponse.data
 
             setSearching({ searching: true, searchMessage: 'Valid image provided!' })
 
             // infer ingredient using s3 image url
-            const inferIngredientResponse = await inferIngredient(s3ImageUrl)
+            const inferIngredientResponse = await inferIngredient(s3ImageUrl, accessToken)
             const ingredient = inferIngredientResponse.data
 
             setSearching({
@@ -51,7 +53,7 @@ export default SearchView = () => {
             })
 
             // get recipes with this ingredient
-            const recipeResponse = await fetchRecipes(ingredient)
+            const recipeResponse = await fetchRecipes(ingredient, accessToken)
             const recipes = recipeResponse.data
 
             setRecipes({
@@ -59,7 +61,7 @@ export default SearchView = () => {
                 ingredient
             })
         } catch (e) {
-            console.error(e.response.data)
+            console.error(e.response)
         }
 
         setSearching({
@@ -159,8 +161,8 @@ const styles = StyleSheet.create({
     },
     title: {
         alignSelf: 'center',
-        fontSize: 40,
-        fontWeight: 'bold'
+        fontSize: 50,
+        fontFamily: 'Bruno-Ace'
     },
     animation: {
         position: 'relative'
