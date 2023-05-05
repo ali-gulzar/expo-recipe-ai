@@ -14,3 +14,8 @@ export const accessTokenState = atom({
     key: 'accessTokenState',
     default: getValuefromAsyncStorage('accessTokenState')
 })
+
+export const profileViewState = atom({
+    key: 'profileViewState',
+    default: 'login'
+})

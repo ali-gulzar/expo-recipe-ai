@@ -8,3 +8,12 @@ export const loginUser = (email, password) => {
 
     return axios.post(`${API_URL}/user/login`, formData)
 }
+
+export const signupUser = (email, password, name) => {
+    const body = {
+        email: email,
+        password: password,
+        name: name
+    }
+    return axios.post(`${API_URL}/user/create`, body)
+}

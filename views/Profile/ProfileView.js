@@ -2,11 +2,13 @@ import { Text } from 'react-native-paper'
 import { StyleSheet, SafeAreaView, View } from 'react-native'
 import Login from './Login'
 import Profile from './Profile'
+import Signup from './Signup'
 import { useRecoilValue } from 'recoil'
-import { accessTokenState } from '../../atoms/atom'
+import { accessTokenState, profileViewState } from '../../atoms/atom'
 
 export default function ProfileView() {
     const accessToken = useRecoilValue(accessTokenState)
+    const profileView = useRecoilValue(profileViewState)
 
     return (
         <SafeAreaView style={styles.container}>
@@ -16,7 +18,7 @@ export default function ProfileView() {
                 </Text>
             </View>
 
-            {accessToken ? <Profile /> : <Login />}
+            {accessToken ? <Profile /> : profileView === 'login' ? <Login /> : <Signup />}
         </SafeAreaView>
     )
 }
