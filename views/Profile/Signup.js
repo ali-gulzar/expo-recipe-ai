@@ -12,7 +12,7 @@ export default function Signup() {
     const [creatingUser, setCreatingUser] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
 
-    const setProfileViewState = useSetRecoilState(profileViewState)
+    const setProfileView = useSetRecoilState(profileViewState)
 
     const handleSignup = () => {
         Keyboard.dismiss()
@@ -20,7 +20,7 @@ export default function Signup() {
         signupUser(email, password, name)
             .then((response) => {
                 setCreatingUser(false)
-                setProfileViewState('login')
+                setProfileView('login')
             })
             .catch((error) => {
                 const errorMessage = error.response.data['detail'].split('=')[1].trim()
@@ -61,18 +61,18 @@ export default function Signup() {
             />
             <View style={styles.buttonsContainer}>
                 <Button
-                    disabled={creatingUser}
+                    disabled={creatingUser || email === '' || name === '' || password === ''}
                     loading={creatingUser}
                     mode="contained"
                     onPress={handleSignup}
                 >
                     Sign Up
                 </Button>
-                <Button disabled={creatingUser} onPress={() => setProfileViewState('login')}>
+                <Button disabled={creatingUser} onPress={() => setProfileView('login')}>
                     Login
                 </Button>
             </View>
-            <Snackbar visible={errorMessage ? true : false} elevation={5}>
+            <Snackbar visible={errorMessage} elevation={5}>
                 {errorMessage}
             </Snackbar>
         </View>

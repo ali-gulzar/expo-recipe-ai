@@ -17,3 +17,12 @@ export const signupUser = (email, password, name) => {
     }
     return axios.post(`${API_URL}/user/create`, body)
 }
+
+export const saveRecipe = (recipeId, accessToken) => {
+    const body = {
+        recipe_id: recipeId
+    }
+    return axios.post(`${API_URL}/user/save`, body, {
+        headers: { Authorization: `Bearer ${accessToken}` }
+    })
+}

@@ -4,10 +4,10 @@ import Login from './Login'
 import Profile from './Profile'
 import Signup from './Signup'
 import { useRecoilValue } from 'recoil'
-import { accessTokenState, profileViewState } from '../../atoms/atom'
+import { userState, profileViewState } from '../../atoms/atom'
 
 export default function ProfileView() {
-    const accessToken = useRecoilValue(accessTokenState)
+    const user = useRecoilValue(userState)
     const profileView = useRecoilValue(profileViewState)
 
     return (
@@ -18,7 +18,7 @@ export default function ProfileView() {
                 </Text>
             </View>
 
-            {accessToken ? <Profile /> : profileView === 'login' ? <Login /> : <Signup />}
+            {user ? <Profile /> : profileView === 'login' ? <Login /> : <Signup />}
         </SafeAreaView>
     )
 }

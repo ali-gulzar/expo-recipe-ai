@@ -39,3 +39,9 @@ export const uploadImage = (image, accessToken) => {
         }
     })
 }
+
+export const getRecipe = (recipeId, accessToken) => {
+    return axios.get(`${API_URL}/recipe/${recipeId}`, {
+        headers: { Authorization: `Bearer ${accessToken}` }
+    })
+}

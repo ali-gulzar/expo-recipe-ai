@@ -40,8 +40,8 @@ export default function App() {
         }
     ])
     const [fontsLoaded] = useFonts({
-        'Bruno-Ace': require('./fonts/BrunoAce.ttf'),
-        'Red-Hat': require('./fonts/RedHat.ttf')
+        'Bruno-Ace': require('./assets/fonts/BrunoAce.ttf'),
+        'Red-Hat': require('./assets/fonts/RedHat.ttf')
     })
 
     if (!fontsLoaded) {

@@ -2,21 +2,22 @@ import { View, StyleSheet } from 'react-native'
 import { Text, Avatar, Switch, Button } from 'react-native-paper'
 import { useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { useSetRecoilState } from 'recoil'
-import { accessTokenState } from '../../atoms/atom'
+import { useRecoilState } from 'recoil'
+import { userState } from '../../atoms/atom'
 import { MaterialIcons, Ionicons } from '@expo/vector-icons'
 
 export default function Profile() {
+    const [publicProfile, setPublicProfile] = useState(false)
     const [pushNotifications, setPushNotifications] = useState(false)
-    const setAccessToken = useSetRecoilState(accessTokenState)
+    const [user, setUser] = useRecoilState(userState)
 
     const handleLogout = async () => {
         try {
-            await AsyncStorage.removeItem('accessTokenState')
+            await AsyncStorage.removeItem('userState')
         } catch (e) {
             console.error(e)
         }
-        setAccessToken(null)
+        setUser(null)
     }
 
     return (
@@ -24,7 +25,7 @@ export default function Profile() {
             {/** User name */}
             <View style={styles.userInfo}>
                 <Text style={styles.name} variant="headlineMedium">
-                    Muhammad Ali Gulzar
+                    {user['name']}
                 </Text>
                 <Avatar.Icon icon="face-man-profile" size={42} />
             </View>
@@ -39,8 +40,8 @@ export default function Profile() {
                         </Text>
                     </View>
                     <Switch
-                        value={pushNotifications}
-                        onValueChange={() => setPushNotifications(!pushNotifications)}
+                        value={publicProfile}
+                        onValueChange={() => setPublicProfile(!publicProfile)}
                     />
                 </View>
                 <View style={styles.settingContainer}>

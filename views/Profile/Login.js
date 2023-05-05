@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { TextInput, Button, Text } from 'react-native-paper'
 import { View, StyleSheet, Keyboard } from 'react-native'
 import { loginUser } from '../../api/user'
-import { accessTokenState, profileViewState } from '../../atoms/atom'
+import { profileViewState, userState } from '../../atoms/atom'
 import { useSetRecoilState } from 'recoil'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
@@ -10,19 +10,16 @@ export default function Login() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [loggingUser, setLoggingUser] = useState(false)
-    const setAccessTokenState = useSetRecoilState(accessTokenState)
     const setProfileViewState = useSetRecoilState(profileViewState)
+    const setUser = useSetRecoilState(userState)
 
     const handleLoginUser = () => {
         Keyboard.dismiss()
         setLoggingUser(true)
         loginUser(email, password)
             .then((response) => {
-                setAccessTokenState(response.data['access_token'])
-                return response
-            })
-            .then((response) => {
-                AsyncStorage.setItem('accessTokenState', response.data['access_token'])
+                setUser(response.data)
+                AsyncStorage.setItem('userState', JSON.stringify(response.data))
                 setLoggingUser(false)
             })
             .catch((error) => {
@@ -53,7 +50,7 @@ export default function Login() {
             />
             <View style={styles.buttonsContainer}>
                 <Button
-                    disabled={loggingUser}
+                    disabled={loggingUser || email === '' || password === ''}
                     loading={loggingUser}
                     mode="contained"
                     onPress={handleLoginUser}

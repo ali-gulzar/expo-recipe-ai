@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { StyleSheet, SafeAreaView, Text, View, FlatList } from 'react-native'
-import { FAB, Portal, ActivityIndicator } from 'react-native-paper'
+import { FAB, Portal, ActivityIndicator, Snackbar } from 'react-native-paper'
 import LottieView from 'lottie-react-native'
 import * as ImagePicker from 'expo-image-picker'
 import { uploadImage, inferIngredient, fetchRecipes } from '../../api/recipe'
@@ -8,7 +8,7 @@ import RecipeCard from '../../components/RecipeCard'
 import { getAnimation } from '../../api/animation'
 import { ANIMATIONS } from '../../constants'
 import { useRecoilValue } from 'recoil'
-import { accessTokenState } from '../../atoms/atom'
+import { userState } from '../../atoms/atom'
 
 export default SearchView = () => {
     const [fabOpen, setFabOpen] = useState(false)
@@ -19,7 +19,8 @@ export default SearchView = () => {
     const [searching, setSearching] = useState({ searching: false, searchMessage: null })
     const [status, requestPermission] = ImagePicker.useCameraPermissions()
     const [animation, setAnimation] = useState({})
-    const accessToken = useRecoilValue(accessTokenState)
+    const [message, setMessage] = useState('')
+    const user = useRecoilValue(userState)
 
     useEffect(() => {
         getAnimation(ANIMATIONS.women_thinking)
@@ -38,13 +39,13 @@ export default SearchView = () => {
 
         try {
             // upload image to s3
-            const uploadImageResponse = await uploadImage(image, accessToken)
+            const uploadImageResponse = await uploadImage(image, user['access_token'])
             const s3ImageUrl = uploadImageResponse.data
 
             setSearching({ searching: true, searchMessage: 'Valid image provided!' })
 
             // infer ingredient using s3 image url
-            const inferIngredientResponse = await inferIngredient(s3ImageUrl, accessToken)
+            const inferIngredientResponse = await inferIngredient(s3ImageUrl, user['access_token'])
             const ingredient = inferIngredientResponse.data
 
             setSearching({
@@ -53,7 +54,7 @@ export default SearchView = () => {
             })
 
             // get recipes with this ingredient
-            const recipeResponse = await fetchRecipes(ingredient, accessToken)
+            const recipeResponse = await fetchRecipes(ingredient, user['access_token'])
             const recipes = recipeResponse.data
 
             setRecipes({
@@ -71,26 +72,36 @@ export default SearchView = () => {
     }
 
     const pickImage = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.All
-        })
-
-        if (!result.canceled) {
-            fetchResults(result.assets[0])
-        }
-    }
-
-    const takePhoto = async () => {
-        if (status.granted) {
-            let result = await ImagePicker.launchCameraAsync({
-                mediaTypes: 'Images'
+        if (!user) {
+            setMessage('Please login to your account to access this feature.')
+            setTimeout(() => setMessage(''), 3000)
+        } else {
+            let result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.All
             })
 
             if (!result.canceled) {
                 fetchResults(result.assets[0])
             }
+        }
+    }
+
+    const takePhoto = async () => {
+        if (!user) {
+            setMessage('Please login to your account to access this feature.')
+            setTimeout(() => setMessage(''), 3000)
         } else {
-            requestPermission()
+            if (status.granted) {
+                let result = await ImagePicker.launchCameraAsync({
+                    mediaTypes: 'Images'
+                })
+
+                if (!result.canceled) {
+                    fetchResults(result.assets[0])
+                }
+            } else {
+                requestPermission()
+            }
         }
     }
 
@@ -114,7 +125,9 @@ export default SearchView = () => {
         <View style={styles.recipeListContainer}>
             <FlatList
                 data={recipes.recipes}
-                renderItem={({ item }) => <RecipeCard recipe={item} />}
+                renderItem={({ item }) => (
+                    <RecipeCard recipe={item} accessToken={user['access_token']} />
+                )}
                 keyExtractor={(item) => item.url}
                 showsVerticalScrollIndicator={false}
             />
@@ -151,6 +164,9 @@ export default SearchView = () => {
                     ]}
                 />
             </Portal>
+            <Snackbar wrapperStyle={{ top: 60 }} visible={message} elevation={5}>
+                {message}
+            </Snackbar>
         </SafeAreaView>
     )
 }
