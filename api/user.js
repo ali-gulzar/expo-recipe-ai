@@ -31,7 +31,8 @@ export const unsaveRecipe = (recipeId, accessToken) => {
     const body = {
         recipe_id: recipeId
     }
-    return axios.post(`${API_URL}/user/unsave`, body, {
+    return axios.delete(`${API_URL}/user/unsave`, {
+        data: body,
         headers: { Authorization: `Bearer ${accessToken}` }
     })
 }

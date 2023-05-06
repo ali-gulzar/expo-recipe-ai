@@ -2,17 +2,17 @@ import { FlatList, SafeAreaView, StyleSheet, View, RefreshControl } from 'react-
 import { getSavedRecipes } from '../../api/user'
 import { getRecipe } from '../../api/recipe'
 import { useEffect, useState, useRef } from 'react'
-import { useRecoilValue } from 'recoil'
-import { userState } from '../../atoms/atom'
+import { useRecoilValue, useRecoilState } from 'recoil'
+import { userState, savedRecipesState } from '../../atoms/atom'
 import RecipeCard from '../../components/RecipeCard'
 import { Text, ActivityIndicator, Button } from 'react-native-paper'
 import LottieView from 'lottie-react-native'
 
 export default function SavedView() {
     const user = useRecoilValue(userState)
-    const [recipes, setRecipes] = useState([])
     const [searching, setSearching] = useState(false)
     const [refreshing, setRefreshing] = useState(false)
+    const [savedRecipes, setSavedRecipes] = useRecoilState(savedRecipesState)
 
     const lottieRef = useRef(null)
     useEffect(() => {
@@ -38,7 +38,7 @@ export default function SavedView() {
                 )
                 const res = await Promise.all(apiCalls)
                 const data = res.map((res) => res.data)
-                setRecipes(data.flat())
+                setSavedRecipes(data.flat())
                 if (refreshControl) {
                     setRefreshing(false)
                 } else {
@@ -75,7 +75,7 @@ export default function SavedView() {
             </Text>
             {searching ? (
                 <SearchingForSavedRecipes />
-            ) : recipes.length === 0 || user === null ? (
+            ) : savedRecipes.length === 0 || user === null ? (
                 <View style={styles.animationContainer}>
                     <LottieView
                         style={styles.animation}
@@ -97,11 +97,11 @@ export default function SavedView() {
                             refreshing={refreshing}
                         />
                     }
-                    data={recipes}
+                    data={savedRecipes}
                     renderItem={({ item }) => (
                         <RecipeCard recipe={item} accessToken={user['access_token']} />
                     )}
-                    keyExtractor={(item) => item.url}
+                    keyExtractor={(item) => item.uri.split('#recipe_')[1]}
                     showsVerticalScrollIndicator={false}
                 />
             )}

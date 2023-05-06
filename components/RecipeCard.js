@@ -1,14 +1,34 @@
 import { Card, Button } from 'react-native-paper'
 import { StyleSheet, Text } from 'react-native'
 import * as WebBrowser from 'expo-web-browser'
-import { saveRecipe } from '../api/user'
+import { saveRecipe, unsaveRecipe } from '../api/user'
+import { savedRecipeIdsState, savedRecipesState } from '../atoms/atom'
+import { useRecoilValue, useRecoilState } from 'recoil'
 
 export default function RecipeCard({ recipe, accessToken }) {
-    const handleSave = () => {
-        const recipeId = recipe.uri.split('#recipe_')[1]
-        saveRecipe(recipeId, accessToken)
-            .then((response) => console.log(response.data))
-            .catch((error) => console.error(error.response.data))
+    const recipeId = recipe.uri.split('#recipe_')[1]
+
+    const [savedRecipes, setSavedRecipes] = useRecoilState(savedRecipesState)
+    const savedRecipeIds = useRecoilValue(savedRecipeIdsState)
+
+    const handleSave = (isSaved) => {
+        if (isSaved) {
+            unsaveRecipe(recipeId, accessToken)
+                .then((response) => {
+                    if (response.data === true) {
+                        const updatedRecipes = savedRecipes.filter((recipe) => {
+                            const id = recipe.uri.split('#recipe_')[1]
+                            return id !== recipeId
+                        })
+                        setSavedRecipes(updatedRecipes)
+                    }
+                })
+                .catch((error) => console.error(error.response.data))
+        } else {
+            saveRecipe(recipeId, accessToken)
+                .then((response) => console.log(response.data))
+                .catch((error) => console.error(error.response.data))
+        }
     }
 
     return (
@@ -19,8 +39,8 @@ export default function RecipeCard({ recipe, accessToken }) {
                 <Text>{recipe.ingredientLines.join('\n')}</Text>
             </Card.Content>
             <Card.Actions>
-                <Button onPress={handleSave} icon="heart">
-                    Save
+                <Button onPress={() => handleSave(savedRecipeIds.includes(recipeId))} icon="heart">
+                    {savedRecipeIds.includes(recipeId) ? 'Remove' : 'Save'}
                 </Button>
                 <Button onPress={() => WebBrowser.openBrowserAsync(recipe.url)} icon="link">
                     Open

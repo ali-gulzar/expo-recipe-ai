@@ -1,4 +1,4 @@
-import { atom } from 'recoil'
+import { atom, selector } from 'recoil'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const getValuefromAsyncStorage = async (value, isJson) => {
@@ -18,4 +18,17 @@ export const userState = atom({
 export const profileViewState = atom({
     key: 'profileViewState',
     default: 'login'
+})
+
+export const savedRecipesState = atom({
+    key: 'savedRecipesState',
+    default: []
+})
+
+export const savedRecipeIdsState = selector({
+    key: 'savedRecipeIdsState',
+    get: ({ get }) => {
+        const recipes = get(savedRecipesState)
+        return recipes.map((recipe) => recipe.uri.split('#recipe_')[1])
+    }
 })
