@@ -4,7 +4,7 @@ import { Provider as PaperProvider, BottomNavigation, Portal } from 'react-nativ
 import { RecoilRoot } from 'recoil'
 import { useFonts } from 'expo-font'
 import SearchView from './views/Search/SearchView.js'
-import BrowseView from './views/Browse/BrowseView.js'
+import SavedView from './views/Saved/SavedView.js'
 import ProfileView from './views/Profile/ProfileView.js'
 
 const renderScene = BottomNavigation.SceneMap({
@@ -13,7 +13,7 @@ const renderScene = BottomNavigation.SceneMap({
             <SearchView />
         </Portal.Host>
     ),
-    browse: BrowseView,
+    saved: SavedView,
     profile: ProfileView
 })
 
@@ -27,10 +27,10 @@ export default function App() {
             unfocusedIcon: 'clipboard-search-outline'
         },
         {
-            key: 'browse',
-            title: 'Browse',
-            focusedIcon: 'archive',
-            unfocusedIcon: 'archive-outline'
+            key: 'saved',
+            title: 'Saved',
+            focusedIcon: 'content-save-all',
+            unfocusedIcon: 'content-save-all-outline'
         },
         {
             key: 'profile',

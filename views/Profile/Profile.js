@@ -20,6 +20,10 @@ export default function Profile() {
         setUser(null)
     }
 
+    if (!user) {
+        return null
+    }
+
     return (
         <>
             {/** User name */}

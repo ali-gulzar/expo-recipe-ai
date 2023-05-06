@@ -26,3 +26,18 @@ export const saveRecipe = (recipeId, accessToken) => {
         headers: { Authorization: `Bearer ${accessToken}` }
     })
 }
+
+export const unsaveRecipe = (recipeId, accessToken) => {
+    const body = {
+        recipe_id: recipeId
+    }
+    return axios.post(`${API_URL}/user/unsave`, body, {
+        headers: { Authorization: `Bearer ${accessToken}` }
+    })
+}
+
+export const getSavedRecipes = (accessToken) => {
+    return axios.get(`${API_URL}/user/saved-recipes`, {
+        headers: { Authorization: `Bearer ${accessToken}` }
+    })
+}

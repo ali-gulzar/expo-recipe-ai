@@ -1,12 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { StyleSheet, SafeAreaView, Text, View, FlatList } from 'react-native'
 import { FAB, Portal, ActivityIndicator, Snackbar } from 'react-native-paper'
 import LottieView from 'lottie-react-native'
 import * as ImagePicker from 'expo-image-picker'
 import { uploadImage, inferIngredient, fetchRecipes } from '../../api/recipe'
 import RecipeCard from '../../components/RecipeCard'
-import { getAnimation } from '../../api/animation'
-import { ANIMATIONS } from '../../constants'
 import { useRecoilValue } from 'recoil'
 import { userState } from '../../atoms/atom'
 
@@ -18,14 +16,15 @@ export default SearchView = () => {
     })
     const [searching, setSearching] = useState({ searching: false, searchMessage: null })
     const [status, requestPermission] = ImagePicker.useCameraPermissions()
-    const [animation, setAnimation] = useState({})
     const [message, setMessage] = useState('')
     const user = useRecoilValue(userState)
 
+    const lottieRef = useRef(null)
     useEffect(() => {
-        getAnimation(ANIMATIONS.women_thinking)
-            .then((response) => setAnimation(response.data))
-            .catch((e) => console.error(e.response.data))
+        lottieRef.current?.reset()
+        setTimeout(() => {
+            lottieRef.current?.play()
+        }, 0)
     }, [])
 
     const fetchResults = async (image) => {
@@ -62,7 +61,7 @@ export default SearchView = () => {
                 ingredient
             })
         } catch (e) {
-            console.error(e.response)
+            console.error(e.response.data)
         }
 
         setSearching({
@@ -107,9 +106,11 @@ export default SearchView = () => {
 
     const StartSearching = () => (
         <View>
-            {Object.keys(animation).length > 0 && (
-                <LottieView autoPlay loop={true} source={animation} style={styles.animation} />
-            )}
+            <LottieView
+                ref={lottieRef}
+                source={require('../../assets/animation/women_thinking.json')}
+                style={styles.animation}
+            />
             <Text style={styles.searchText}>Click on + icon to start searching for recipes.</Text>
         </View>
     )
@@ -122,22 +123,20 @@ export default SearchView = () => {
     )
 
     const RecipeList = () => (
-        <View style={styles.recipeListContainer}>
-            <FlatList
-                data={recipes.recipes}
-                renderItem={({ item }) => (
-                    <RecipeCard recipe={item} accessToken={user['access_token']} />
-                )}
-                keyExtractor={(item) => item.url}
-                showsVerticalScrollIndicator={false}
-            />
-        </View>
+        <FlatList
+            data={recipes.recipes}
+            renderItem={({ item }) => (
+                <RecipeCard recipe={item} accessToken={user['access_token']} />
+            )}
+            keyExtractor={(item) => item.url}
+            showsVerticalScrollIndicator={false}
+        />
     )
 
     return (
         <SafeAreaView style={styles.container}>
             <Text style={styles.title}>RECIPES</Text>
-            {recipes.recipes.length > 0 ? (
+            {recipes.recipes.length > 0 && user !== null ? (
                 <RecipeList />
             ) : searching.searching ? (
                 <SearchingRecipes />
@@ -173,7 +172,9 @@ export default SearchView = () => {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        marginLeft: 5,
+        marginRight: 5
     },
     title: {
         alignSelf: 'center',
@@ -192,10 +193,6 @@ const styles = StyleSheet.create({
     },
     loader: {
         marginBottom: 20
-    },
-    recipeListContainer: {
-        marginLeft: 5,
-        marginRight: 5
     },
     ingredientText: {
         alignSelf: 'center',
