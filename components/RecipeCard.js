@@ -5,14 +5,17 @@ import { useRecoilState, useRecoilValue } from 'recoil'
 
 import { saveRecipe, unsaveRecipe } from '../api/user'
 import { savedRecipeIdsState, savedRecipesState } from '../atoms/atom'
+import { useState } from 'react'
 
 export default function RecipeCard({ recipe, accessToken }) {
     const recipeId = recipe.uri.split('#recipe_')[1]
 
+    const [updating, setUpdating] = useState(false)
     const [savedRecipes, setSavedRecipes] = useRecoilState(savedRecipesState)
     const savedRecipeIds = useRecoilValue(savedRecipeIdsState)
 
     const handleSave = (isSaved) => {
+        setUpdating(true)
         if (isSaved) {
             unsaveRecipe(recipeId, accessToken)
                 .then((response) => {
@@ -23,12 +26,22 @@ export default function RecipeCard({ recipe, accessToken }) {
                         })
                         setSavedRecipes(updatedRecipes)
                     }
+                    setUpdating(false)
                 })
-                .catch((error) => console.error(error.response.data))
+                .catch((error) => {
+                    console.error(error.response.data)
+                    setUpdating(false)
+                })
         } else {
             saveRecipe(recipeId, accessToken)
-                .then((response) => console.log(response.data))
-                .catch((error) => console.error(error.response.data))
+                .then((response) => {
+                    // console.log(response.data)
+                    setUpdating(false)
+                })
+                .catch((error) => {
+                    console.error(error.response.data)
+                    setUpdating(false)
+                })
         }
     }
 
@@ -40,7 +53,7 @@ export default function RecipeCard({ recipe, accessToken }) {
                 <Text>{recipe.ingredientLines.join('\n')}</Text>
             </Card.Content>
             <Card.Actions>
-                <Button onPress={() => handleSave(savedRecipeIds.includes(recipeId))} icon="heart">
+                <Button loading={updating} disabled={updating} onPress={() => handleSave(savedRecipeIds.includes(recipeId))} icon="heart">
                     {savedRecipeIds.includes(recipeId) ? 'Remove' : 'Save'}
                 </Button>
                 <Button onPress={() => WebBrowser.openBrowserAsync(recipe.url)} icon="link">
