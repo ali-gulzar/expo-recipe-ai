@@ -1,10 +1,11 @@
-import { View, StyleSheet } from 'react-native'
-import { Text, Avatar, Switch, Button } from 'react-native-paper'
-import { useState } from 'react'
+import { Ionicons, MaterialIcons } from '@expo/vector-icons'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useState } from 'react'
+import { StyleSheet, View } from 'react-native'
+import { Avatar, Button, Switch, Text } from 'react-native-paper'
 import { useRecoilState } from 'recoil'
+
 import { userState } from '../../atoms/atom'
-import { MaterialIcons, Ionicons } from '@expo/vector-icons'
 
 export default function Profile() {
     const [publicProfile, setPublicProfile] = useState(false)

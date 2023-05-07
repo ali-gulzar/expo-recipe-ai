@@ -1,9 +1,10 @@
 import { useState } from 'react'
-import { TextInput, Button, Text, Snackbar } from 'react-native-paper'
-import { View, StyleSheet, Keyboard } from 'react-native'
-import { profileViewState } from '../../atoms/atom'
+import { Keyboard, StyleSheet, View } from 'react-native'
+import { Button, Snackbar, Text, TextInput } from 'react-native-paper'
 import { useSetRecoilState } from 'recoil'
+
 import { signupUser } from '../../api/user'
+import { profileViewState } from '../../atoms/atom'
 
 export default function Signup() {
     const [name, setName] = useState('')

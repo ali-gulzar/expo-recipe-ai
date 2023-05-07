@@ -1,12 +1,13 @@
-import { useState, useRef, useEffect } from 'react'
-import { StyleSheet, SafeAreaView, Text, View, FlatList } from 'react-native'
-import { FAB, Portal, ActivityIndicator, Snackbar } from 'react-native-paper'
-import LottieView from 'lottie-react-native'
 import * as ImagePicker from 'expo-image-picker'
-import { uploadImage, inferIngredient, fetchRecipes } from '../../api/recipe'
-import RecipeCard from '../../components/RecipeCard'
+import LottieView from 'lottie-react-native'
+import { useEffect, useRef, useState } from 'react'
+import { FlatList, SafeAreaView, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, FAB, Portal, Snackbar } from 'react-native-paper'
 import { useRecoilValue } from 'recoil'
+
+import { fetchRecipes, inferIngredient, uploadImage } from '../../api/recipe'
 import { userState } from '../../atoms/atom'
+import RecipeCard from '../../components/RecipeCard'
 
 export default SearchView = () => {
     const [fabOpen, setFabOpen] = useState(false)

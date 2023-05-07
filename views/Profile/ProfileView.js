@@ -1,10 +1,11 @@
+import { SafeAreaView, StyleSheet, View } from 'react-native'
 import { Text } from 'react-native-paper'
-import { StyleSheet, SafeAreaView, View } from 'react-native'
+import { useRecoilValue } from 'recoil'
+
+import { profileViewState, userState } from '../../atoms/atom'
 import Login from './Login'
 import Profile from './Profile'
 import Signup from './Signup'
-import { useRecoilValue } from 'recoil'
-import { userState, profileViewState } from '../../atoms/atom'
 
 export default function ProfileView() {
     const user = useRecoilValue(userState)

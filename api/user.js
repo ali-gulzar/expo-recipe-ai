@@ -1,5 +1,6 @@
-import { API_URL } from '../constants'
 import axios from 'axios'
+
+import { API_URL } from '../constants'
 
 export const loginUser = (email, password) => {
     const formData = new FormData()

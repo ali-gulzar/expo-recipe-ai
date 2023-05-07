@@ -26,6 +26,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
+    "@trivago/prettier-plugin-sort-imports": "^4.1.1",
     "prettier": "^2.8.7"
   },
   "private": true

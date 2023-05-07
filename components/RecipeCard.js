@@ -1,9 +1,10 @@
-import { Card, Button } from 'react-native-paper'
-import { StyleSheet, Text } from 'react-native'
 import * as WebBrowser from 'expo-web-browser'
+import { StyleSheet, Text } from 'react-native'
+import { Button, Card } from 'react-native-paper'
+import { useRecoilState, useRecoilValue } from 'recoil'
+
 import { saveRecipe, unsaveRecipe } from '../api/user'
 import { savedRecipeIdsState, savedRecipesState } from '../atoms/atom'
-import { useRecoilValue, useRecoilState } from 'recoil'
 
 export default function RecipeCard({ recipe, accessToken }) {
     const recipeId = recipe.uri.split('#recipe_')[1]

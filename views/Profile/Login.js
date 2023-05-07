@@ -1,10 +1,11 @@
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useState } from 'react'
-import { TextInput, Button, Text } from 'react-native-paper'
-import { View, StyleSheet, Keyboard } from 'react-native'
+import { Keyboard, StyleSheet, View } from 'react-native'
+import { Button, Text, TextInput } from 'react-native-paper'
+import { useSetRecoilState } from 'recoil'
+
 import { loginUser } from '../../api/user'
 import { profileViewState, userState } from '../../atoms/atom'
-import { useSetRecoilState } from 'recoil'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export default function Login() {
     const [email, setEmail] = useState('')

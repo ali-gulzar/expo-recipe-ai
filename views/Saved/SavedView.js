@@ -1,12 +1,13 @@
-import { FlatList, SafeAreaView, StyleSheet, View, RefreshControl } from 'react-native'
-import { getSavedRecipes } from '../../api/user'
-import { getRecipe } from '../../api/recipe'
-import { useEffect, useState, useRef } from 'react'
-import { useRecoilValue, useRecoilState } from 'recoil'
-import { userState, savedRecipesState } from '../../atoms/atom'
-import RecipeCard from '../../components/RecipeCard'
-import { Text, ActivityIndicator, Button } from 'react-native-paper'
 import LottieView from 'lottie-react-native'
+import { useEffect, useRef, useState } from 'react'
+import { FlatList, RefreshControl, SafeAreaView, StyleSheet, View } from 'react-native'
+import { ActivityIndicator, Button, Text } from 'react-native-paper'
+import { useRecoilState, useRecoilValue } from 'recoil'
+
+import { getRecipe } from '../../api/recipe'
+import { getSavedRecipes } from '../../api/user'
+import { savedRecipesState, userState } from '../../atoms/atom'
+import RecipeCard from '../../components/RecipeCard'
 
 export default function SavedView() {
     const user = useRecoilValue(userState)
@@ -81,6 +82,7 @@ export default function SavedView() {
                         style={styles.animation}
                         source={require('../../assets/animation/no_recipes.json')}
                         ref={lottieRef}
+                        speed={0.9}
                     />
                     <Text style={styles.animationText}>
                         {user

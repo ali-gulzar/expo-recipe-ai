@@ -3,3 +3,6 @@ semi: false
 printWidth: 100
 trailingComma: none
 tabWidth: 4
+importOrder: ['^@core/(.*)$', '^@server/(.*)$', '^@ui/(.*)$', '^[./]']
+importOrderSeparation: true
+importOrderSortSpecifiers: true

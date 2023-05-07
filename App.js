@@ -1,11 +1,12 @@
-import { useState } from 'react'
-import { StatusBar } from 'expo-status-bar'
-import { Provider as PaperProvider, BottomNavigation, Portal } from 'react-native-paper'
-import { RecoilRoot } from 'recoil'
 import { useFonts } from 'expo-font'
-import SearchView from './views/Search/SearchView.js'
-import SavedView from './views/Saved/SavedView.js'
+import { StatusBar } from 'expo-status-bar'
+import { useState } from 'react'
+import { BottomNavigation, Provider as PaperProvider, Portal } from 'react-native-paper'
+import { RecoilRoot } from 'recoil'
+
 import ProfileView from './views/Profile/ProfileView.js'
+import SavedView from './views/Saved/SavedView.js'
+import SearchView from './views/Search/SearchView.js'
 
 const renderScene = BottomNavigation.SceneMap({
     search: () => (
