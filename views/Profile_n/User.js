@@ -1,6 +1,6 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { Button } from '@react-native-material/core'
+import { Button, ListItem } from '@react-native-material/core'
 import * as React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { useRecoilState } from 'recoil'
@@ -8,7 +8,7 @@ import { useRecoilState } from 'recoil'
 import { userState } from '../../atoms/atom'
 import { COLOR_PALLETE } from '../../constants'
 
-export default User = () => {
+export default User = ({ navigation }) => {
     const [userStateValue, setUserState] = useRecoilState(userState)
 
     const handleLogout = () => {
@@ -26,7 +26,18 @@ export default User = () => {
                     color={COLOR_PALLETE.blue}
                 />
             </View>
-            <Button title="logout" style={styles.logoutButton} onPress={handleLogout} />
+            <View style={styles.settings}>
+                <ListItem
+                    title="Saved Recipes"
+                    leading={<FontAwesome name="save" size={24} color={COLOR_PALLETE.blue} />}
+                    trailing={<MaterialCommunityIcons name="chevron-right" size={24} />}
+                    onPress={() => navigation.navigate('Saved')}
+                />
+            </View>
+            <View style={styles.footer}>
+                <Button title="logout" style={styles.logoutButton} onPress={handleLogout} />
+                <Text style={styles.appVersion}>App Version: 1.0.0</Text>
+            </View>
         </View>
     )
 }
@@ -47,12 +58,28 @@ const styles = StyleSheet.create({
         fontFamily: 'Bruno-Ace',
         fontSize: 30
     },
-    logoutButton: {
-        backgroundColor: COLOR_PALLETE.green,
+    settings: {
+        marginTop: 20
+    },
+    savedButton: {
+        display: 'flex',
+        backgroundColor: 'pink',
+        justifyContent: 'space-around'
+    },
+    footer: {
         position: 'absolute',
         bottom: 0,
-        alignSelf: 'center',
         width: '100%',
         marginBottom: 20
+    },
+    logoutButton: {
+        backgroundColor: COLOR_PALLETE.green,
+        alignSelf: 'center',
+        width: '100%',
+        marginBottom: 5
+    },
+    appVersion: {
+        alignSelf: 'center',
+        fontFamily: 'Bruno-Ace'
     }
 })

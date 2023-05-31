@@ -9,7 +9,7 @@ import Login from './Login'
 import Signup from './Signup'
 import User from './User'
 
-export default Profile = () => {
+export default Profile = ({ navigation }) => {
     const [view, setView] = React.useState('login')
     const userStateValue = useRecoilValue(userState)
 
@@ -23,7 +23,7 @@ export default Profile = () => {
 
     const showView = () => {
         if (userStateValue !== null) {
-            return <User />
+            return <User navigation={navigation} />
         } else if (view === 'login') {
             return <Login handleShowToast={handleShowToast} handleView={(view) => setView(view)} />
         } else if (view === 'signup') {

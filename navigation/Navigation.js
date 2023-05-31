@@ -7,8 +7,8 @@ import { getSavedRecipes } from '../api/user'
 import { savedRecipesState, userState } from '../atoms/atom'
 import { COLOR_PALLETE } from '../constants'
 import Explore from '../views/Explore/Explore'
-import Profile from '../views/Profile_n/Profile'
 import Search from '../views/Search_n/Search'
+import ProfileNavigation from './ProfileNavigation'
 
 const Tab = createBottomTabNavigator()
 
@@ -37,7 +37,7 @@ export default Navigation = () => {
                     if (route.name === 'Search') {
                         iconName = focused ? 'text-box-search' : 'text-box-search-outline'
                         return <MaterialCommunityIcons name={iconName} color={color} size={size} />
-                    } else if (route.name === 'Profile') {
+                    } else if (route.name === 'Profile Navigator') {
                         iconName = focused ? 'persons' : 'person'
                         return <Fontisto name={iconName} color={color} size={size} />
                     } else if (route.name === 'Explore') {
@@ -51,7 +51,7 @@ export default Navigation = () => {
         >
             <Tab.Screen name="Search" component={Search} />
             <Tab.Screen name="Explore" component={Explore} />
-            <Tab.Screen name="Profile" component={Profile} />
+            <Tab.Screen name="Profile Navigator" component={ProfileNavigation} />
         </Tab.Navigator>
     )
 }

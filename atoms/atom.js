@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { atom, selector } from 'recoil'
+import { atom } from 'recoil'
 
 const getValuefromAsyncStorage = async (value, parseJson) => {
     try {

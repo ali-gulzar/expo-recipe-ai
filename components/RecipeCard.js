@@ -79,7 +79,7 @@ export default function RecipeCard({ recipe, accessToken, showToast, userId }) {
                             )
                             setSavedRecipesState([
                                 ...savedRecipesStateValue,
-                                { id: userId, recipe_id: recipeId }
+                                { user_id: userId, recipe_id: recipeId }
                             ])
                         } else {
                             setUpdating(false)
@@ -137,7 +137,8 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         backgroundColor: '#D4FADC',
         gap: 15,
-        marginBottom: 10
+        marginBottom: 10,
+        zIndex: 0
     },
     image: {
         width: '100%',

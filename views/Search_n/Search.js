@@ -145,11 +145,17 @@ export default Search = () => {
             )
         } else {
             return (
-                <AnimatedLottieView
-                    autoPlay
-                    loop
-                    source={require('../../assets/animation/women_thinking.json')}
-                />
+                <View style={styles.animationContainer}>
+                    <AnimatedLottieView
+                        autoPlay
+                        loop
+                        source={require('../../assets/animation/women_thinking.json')}
+                        style={styles.animation}
+                    />
+                    <Text style={styles.searchText}>
+                        Click on + button to start your AI recipe search!
+                    </Text>
+                </View>
             )
         }
     }
@@ -199,5 +205,14 @@ const styles = StyleSheet.create({
         marginTop: 20,
         marginLeft: 5,
         marginRight: 5
+    },
+    animationContainer: {
+        flex: 1
+    },
+    animation: {
+        position: 'relative'
+    },
+    searchText: {
+        alignSelf: 'center'
     }
 })
