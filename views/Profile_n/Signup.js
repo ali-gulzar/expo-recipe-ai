@@ -1,11 +1,12 @@
 import { ActivityIndicator, Button, TextInput } from '@react-native-material/core'
 import * as React from 'react'
 import { Keyboard, StyleSheet, View } from 'react-native'
+import Toast from 'react-native-toast-message'
 
 import { signupUser } from '../../api/user'
 import { COLOR_PALLETE } from '../../constants'
 
-export default Signup = ({ handleShowToast, handleView }) => {
+export default Signup = ({ handleView }) => {
     const [name, setName] = React.useState('')
     const [email, setEmail] = React.useState('')
     const [password, setPassword] = React.useState('')
@@ -13,11 +14,23 @@ export default Signup = ({ handleShowToast, handleView }) => {
 
     const handleSignup = () => {
         if (name === '') {
-            handleShowToast('error', 'Invalid Name!', 'Please provide a valid name.')
+            Toast.show({
+                type: 'error',
+                text1: 'Invalid Name!',
+                text2: 'Please provide a valid name.'
+            })
         } else if (email === '' || !email.includes('@')) {
-            handleShowToast('error', 'Invalid Email!', 'Please provide a valid email address.')
+            Toast.show({
+                type: 'error',
+                text1: 'Invalid Email!',
+                text2: 'Please provide a valid email address.'
+            })
         } else if (password === '') {
-            handleShowToast('error', 'Invalid password', 'Please provide a valid password.')
+            Toast.show({
+                type: 'error',
+                text1: 'Invalid password',
+                text2: 'Please provide a valid password.'
+            })
         } else {
             setLoading(true)
             // handle login
@@ -28,20 +41,20 @@ export default Signup = ({ handleShowToast, handleView }) => {
                     const data = response.data
                     setLoading(false)
                     handleView('login')
-                    handleShowToast(
-                        'success',
-                        'Congratulation!',
-                        `Your profile is created with email address ${data['email']}`
-                    )
+                    Toast.show({
+                        type: 'success',
+                        text1: 'Congratulations!',
+                        text2: `Your profile is created with email address ${data['email']}`
+                    })
                 })
                 .catch((e) => {
                     console.error(e)
                     setLoading(false)
-                    handleShowToast(
-                        'error',
-                        'Failed',
-                        'For some reason it failed. Please try again later.'
-                    )
+                    Toast.show({
+                        type: 'error',
+                        text1: 'Failed!',
+                        text2: 'For some reason it failed. Please try again later.'
+                    })
                 })
         }
     }

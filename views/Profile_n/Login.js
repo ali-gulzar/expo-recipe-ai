@@ -2,13 +2,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { ActivityIndicator, Button, TextInput } from '@react-native-material/core'
 import * as React from 'react'
 import { Keyboard, StyleSheet, View } from 'react-native'
+import Toast from 'react-native-toast-message'
 import { useSetRecoilState } from 'recoil'
 
 import { loginUser } from '../../api/user'
 import { userState } from '../../atoms/atom'
 import { COLOR_PALLETE } from '../../constants'
 
-export default Login = ({ handleShowToast, handleView }) => {
+export default Login = ({ handleView }) => {
     const [email, setEmail] = React.useState('')
     const [password, setPassword] = React.useState('')
     const [loading, setLoading] = React.useState(false)
@@ -16,9 +17,17 @@ export default Login = ({ handleShowToast, handleView }) => {
 
     const handleLogin = () => {
         if (email === '' || !email.includes('@')) {
-            handleShowToast('error', 'Incorrect Email!', 'Please provide a valid email address.')
+            Toast.show({
+                type: 'error',
+                text1: 'Incorrect Email!',
+                text2: 'Please provide a valid email address.'
+            })
         } else if (password === '') {
-            handleShowToast('error', 'Incorrect password', 'Please provide a valid password.')
+            Toast.show({
+                type: 'error',
+                text1: 'Incorrect Password',
+                text2: 'Please provide a valid password.'
+            })
         } else {
             // handle login
             Keyboard.dismiss()
@@ -32,16 +41,20 @@ export default Login = ({ handleShowToast, handleView }) => {
 
                     // update views
                     setLoading(false)
-                    handleShowToast('success', 'Congratulation!', 'You are now logged in!')
+                    Toast.show({
+                        type: 'success',
+                        text1: 'Congratulations!',
+                        text2: 'You are now logged in!'
+                    })
                 })
                 .catch((e) => {
                     console.error(e)
                     setLoading(false)
-                    handleShowToast(
-                        'error',
-                        'Failed',
-                        'For some reason it failed. Please try again later.'
-                    )
+                    Toast.show({
+                        type: 'error',
+                        text1: 'Failure!',
+                        text2: 'Incorrect email or password. Please try again!'
+                    })
                 })
         }
     }

@@ -73,19 +73,16 @@ export default Saved = () => {
                         source={require('../../assets/animation/no_recipes.json')}
                         style={styles.animation}
                     />
-                    <Text style={styles.noRecipeText}>{loading ? 'Loading recipes! Please wait' : 'No saved recipes here!'}</Text>
-                    {loading && <ActivityIndicator size={24} color={COLOR_PALLETE.green}/>}
+                    <Text style={styles.noRecipeText}>
+                        {loading ? 'Loading recipes! Please wait' : 'No saved recipes here!'}
+                    </Text>
+                    {loading && <ActivityIndicator size={24} color={COLOR_PALLETE.green} />}
                 </View>
             )
         }
     }
 
-    return (
-        <View style={styles.container}>
-            <Toast style={styles.toast}/>
-            {handleView()}
-        </View>
-    )
+    return <View style={styles.container}>{handleView()}</View>
 }
 
 const styles = StyleSheet.create({
@@ -107,8 +104,5 @@ const styles = StyleSheet.create({
         marginTop: 20,
         marginLeft: 5,
         marginRight: 5
-    },
-    toast: {
-        zIndex: 1
     }
 })

@@ -163,7 +163,6 @@ export default Search = () => {
     return (
         <SafeAreaView style={styles.container}>
             <Text style={styles.title}>Search</Text>
-            <Toast position="top" topOffset={60} />
             {displayView()}
             <FloatingAction
                 actions={actions}

@@ -13,13 +13,15 @@
         },
         "assetBundlePatterns": ["**/*"],
         "ios": {
-            "supportsTablet": true
+            "supportsTablet": true,
+            "bundleIdentifier": "com.aligulzar.exporecipeai"
         },
         "android": {
             "adaptiveIcon": {
                 "foregroundImage": "./assets/adaptive-icon.png",
                 "backgroundColor": "#ffffff"
-            }
+            },
+            "permissions": ["android.permission.RECORD_AUDIO"]
         },
         "web": {
             "favicon": "./assets/favicon.png"
@@ -32,6 +34,11 @@
                     "cameraPermission": "Recipe AI would like to access your camera."
                 }
             ]
-        ]
+        ],
+        "extra": {
+            "eas": {
+                "projectId": "d605e9a4-e638-4a58-bb86-f5241527574b"
+            }
+        }
     }
 }
