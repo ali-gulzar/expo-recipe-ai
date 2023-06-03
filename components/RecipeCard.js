@@ -9,7 +9,7 @@ import { saveRecipe, unsaveRecipe } from '../api/user'
 import { savedRecipesState } from '../atoms/atom'
 import { COLOR_PALLETE } from '../constants'
 
-export default function RecipeCard({ recipe, accessToken, showToast, userId }) {
+export default function RecipeCard({ recipe, showToast, userState }) {
     const recipeId = recipe.uri.split('#recipe_')[1]
 
     const [savedRecipesStateValue, setSavedRecipesState] = useRecoilState(savedRecipesState)
@@ -21,7 +21,7 @@ export default function RecipeCard({ recipe, accessToken, showToast, userId }) {
     const handleUpdate = (isSaved) => {
         setUpdating(true)
 
-        if (!accessToken) {
+        if (!userState) {
             showToast(
                 'error',
                 'Authentication required!',
@@ -30,7 +30,7 @@ export default function RecipeCard({ recipe, accessToken, showToast, userId }) {
             setUpdating(false)
         } else {
             if (isSaved === true) {
-                unsaveRecipe(recipeId, accessToken)
+                unsaveRecipe(recipeId, userState['access_token'])
                     .then((response) => {
                         if (response.data) {
                             setSaved(false)
@@ -67,7 +67,7 @@ export default function RecipeCard({ recipe, accessToken, showToast, userId }) {
                         )
                     })
             } else {
-                saveRecipe(recipeId, accessToken)
+                saveRecipe(recipeId, userState['access_token'])
                     .then((response) => {
                         if (response.data) {
                             setSaved(true)
@@ -79,7 +79,7 @@ export default function RecipeCard({ recipe, accessToken, showToast, userId }) {
                             )
                             setSavedRecipesState([
                                 ...savedRecipesStateValue,
-                                { user_id: userId, recipe_id: recipeId }
+                                { user_id: userState['id'], recipe_id: recipeId }
                             ])
                         } else {
                             setUpdating(false)

@@ -54,9 +54,8 @@ export default Saved = () => {
                         renderItem={({ item }) => (
                             <RecipeCard
                                 recipe={item}
-                                accessToken={userStateValue['access_token']}
                                 showToast={showToast}
-                                userId={userStateValue['id']}
+                                userState={userStateValue}
                             />
                         )}
                         keyExtractor={(item) => item.url}
