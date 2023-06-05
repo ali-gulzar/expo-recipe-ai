@@ -37,7 +37,7 @@ export default Navigation = () => {
                     if (route.name === 'Search') {
                         iconName = focused ? 'text-box-search' : 'text-box-search-outline'
                         return <MaterialCommunityIcons name={iconName} color={color} size={size} />
-                    } else if (route.name === 'Profile Navigator') {
+                    } else if (route.name === 'Profile ') {
                         iconName = focused ? 'persons' : 'person'
                         return <Fontisto name={iconName} color={color} size={size} />
                     } else if (route.name === 'Explore') {
@@ -51,7 +51,7 @@ export default Navigation = () => {
         >
             <Tab.Screen name="Search" component={Search} />
             <Tab.Screen name="Explore" component={Explore} />
-            <Tab.Screen name="Profile Navigator" component={ProfileNavigation} />
+            <Tab.Screen name="Profile " component={ProfileNavigation} />
         </Tab.Navigator>
     )
 }

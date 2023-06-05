@@ -19,6 +19,12 @@ export const signupUser = (email, password, name) => {
     return axios.post(`${API_URL}/user/create`, body)
 }
 
+export const deleteUser = (accessToken) => {
+    return axios.delete(`${API_URL}/user/delete`, {
+        headers: { Authorization: `Bearer ${accessToken}` }
+    })
+}
+
 export const saveRecipe = (recipeId, accessToken) => {
     const body = {
         recipe_id: recipeId

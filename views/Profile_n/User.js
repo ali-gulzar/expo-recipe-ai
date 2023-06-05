@@ -3,17 +3,45 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Button, ListItem } from '@react-native-material/core'
 import * as React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
+import Toast from 'react-native-toast-message'
 import { useRecoilState } from 'recoil'
 
+import { deleteUser } from '../../api/user'
 import { userState } from '../../atoms/atom'
 import { COLOR_PALLETE } from '../../constants'
 
 export default User = ({ navigation }) => {
+    const [loading, setLoading] = React.useState(false)
     const [userStateValue, setUserState] = useRecoilState(userState)
 
     const handleLogout = () => {
         AsyncStorage.removeItem('userState')
         setUserState(null)
+    }
+
+    const handleDelete = () => {
+        setLoading(true)
+        // delete account
+        deleteUser(userStateValue['access_token'])
+            .then((response) => {
+                if (response) {
+                    AsyncStorage.removeItem('userState')
+                    setUserState(null)
+                    Toast.show({
+                        type: 'success',
+                        text1: 'Success!',
+                        text2: 'Successfully deleted your account and data from our servers!'
+                    })
+                }
+            })
+            .catch((e) => {
+                Toast.show({
+                    type: 'error',
+                    text1: 'Failed!',
+                    text2: 'Failed to delete the user.'
+                })
+                console.log(e)
+            })
     }
 
     return (
@@ -35,7 +63,19 @@ export default User = ({ navigation }) => {
                 />
             </View>
             <View style={styles.footer}>
-                <Button title="logout" style={styles.logoutButton} onPress={handleLogout} />
+                <Button
+                    title="delete account"
+                    style={styles.deleteButton}
+                    onPress={handleDelete}
+                    disabled={loading}
+                    loading={loading}
+                />
+                <Button
+                    title="logout"
+                    style={styles.logoutButton}
+                    onPress={handleLogout}
+                    disabled={loading}
+                />
                 <Text style={styles.appVersion}>App Version: 1.0.0</Text>
             </View>
         </View>
@@ -69,6 +109,12 @@ const styles = StyleSheet.create({
     footer: {
         position: 'absolute',
         bottom: 0,
+        width: '100%',
+        marginBottom: 20
+    },
+    deleteButton: {
+        backgroundColor: COLOR_PALLETE.blue,
+        alignSelf: 'center',
         width: '100%',
         marginBottom: 20
     },
